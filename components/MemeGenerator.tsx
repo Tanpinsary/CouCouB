@@ -257,9 +257,9 @@ function drawStyleRing(
 ) {
   const cx = w / 2;
   const cy = h / 2;
-  const radius = Math.min(w, h) * 0.34; // 外圈半径
-  const imgSize = Math.min(100, radius * 0.55); // 每个头像的大小
-  const textOffset = imgSize * 0.7 + 20; // 文字到图像中心的距离
+  const radius = Math.min(w, h) * 0.33; // 外圈半径
+  const imgSize = Math.min(200, radius * 0.6); // 每个头像的大小
+  const textOffset = imgSize * 0.7 + 10; // 文字到图像中心的距离
 
   // 绘制外圈的头像和文字
   for (let i = 0; i < headCount; i++) {
@@ -330,56 +330,31 @@ function drawStyleRing(
     ctx.restore();
 
     // 绘制箭头（从文字指向图像）
-    const arrowStartRadius = radius + textOffset - 30;
-    const arrowEndRadius = radius + imgSize / 2 + 5;
-    const arrowStartX = cx + Math.cos(angle) * arrowStartRadius;
-    const arrowStartY = cy + Math.sin(angle) * arrowStartRadius;
-    const arrowEndX = cx + Math.cos(angle) * arrowEndRadius;
-    const arrowEndY = cy + Math.sin(angle) * arrowEndRadius;
-
     ctx.save();
-    ctx.strokeStyle = "#000";
-    ctx.fillStyle = "#000";
-    ctx.lineWidth = 2;
-    ctx.lineCap = "round";
+    ctx.translate(cx, cy);
+    ctx.rotate(angle + Math.PI / 2);
 
-    // 箭头线
-    ctx.beginPath();
-    ctx.moveTo(arrowStartX, arrowStartY);
-    ctx.lineTo(arrowEndX, arrowEndY);
-    ctx.stroke();
+    const arrowDistStart = radius + textOffset - 20;
+    const arrowDistEnd = radius + imgSize / 2 + 10;
+    const arrowLen = Math.max(20, arrowDistStart - arrowDistEnd);
 
-    // 箭头头部
-    const arrowAngle = Math.atan2(arrowEndY - arrowStartY, arrowEndX - arrowStartX);
-    const arrowHeadLen = 8;
-    ctx.beginPath();
-    ctx.moveTo(arrowEndX, arrowEndY);
-    ctx.lineTo(
-      arrowEndX - arrowHeadLen * Math.cos(arrowAngle - Math.PI / 6),
-      arrowEndY - arrowHeadLen * Math.sin(arrowAngle - Math.PI / 6)
-    );
-    ctx.lineTo(
-      arrowEndX - arrowHeadLen * Math.cos(arrowAngle + Math.PI / 6),
-      arrowEndY - arrowHeadLen * Math.sin(arrowAngle + Math.PI / 6)
-    );
-    ctx.closePath();
-    ctx.fill();
+    drawArrow(ctx, 0, -arrowDistStart, arrowLen);
 
     ctx.restore();
   }
 
   // 绘制中心的 middle 图片
-  const centerImgSize = imgSize * 1.3;
+  const centerImgSize = imgSize * 1.45;
   drawImg(ctx, imgs.middle, cx - centerImgSize / 2, cy - centerImgSize / 2, centerImgSize, centerImgSize, false);
 
-  // 绘制中心文字（最后一个文本，在 middle 图片下方）
+  // 绘制中心文字（最后一个文本，在 middle 图片上方）
   const centerText = texts[headCount] || "";
   if (centerText) {
     ctx.font = `bold 24px ${FONT}`;
     ctx.fillStyle = "#000";
     ctx.textAlign = "center";
     ctx.textBaseline = "top";
-    wrapText(ctx, centerText, cx, cy + centerImgSize / 2 + 10, centerImgSize * 2, 24);
+    wrapText(ctx, centerText, cx, cy - centerImgSize / 2 - 20, centerImgSize * 2, 24);
   }
 }
 
@@ -442,17 +417,27 @@ export default function MemeGenerator() {
   // 更新环形模式的头数量
   const updateRingCount = (count: number) => {
     const newCount = Math.max(3, count); // 最少3个
-    setRingCount(newCount);
+    
     if (style === "环形多头") {
       setTexts(prev => {
+        const prevCount = prev.length - 1; // 之前的头数 = 数组长度 - 1
         const next = new Array(newCount + 1).fill("");
-        // 保留已输入的文本
-        for (let i = 0; i < Math.min(prev.length, next.length); i++) {
+        
+        // 1. 搬运普通文案 (0 到 min(prevCount, newCount) - 1)
+        const commonCount = Math.min(prevCount, newCount);
+        for (let i = 0; i < commonCount; i++) {
           next[i] = prev[i];
         }
+        
+        // 2. 搬运中心文案 (prev 的最后一个 -> next 的最后一个)
+        if (prev.length > 0) {
+          next[newCount] = prev[prevCount];
+        }
+        
         return next;
       });
     }
+    setRingCount(newCount);
   };
 
   const updateText = (i: number, val: string) => {
