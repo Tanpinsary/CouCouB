@@ -4,7 +4,7 @@ import { useRef, useEffect, useState, useCallback } from "react";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Style = 2 | 3 | 4;
+type Style = 2 | 3 | 4 | "环形多头";
 
 interface Imgs {
   left: HTMLImageElement;
@@ -21,19 +21,32 @@ const CANVAS_SIZE: Record<Style, [number, number]> = {
   2: [900, 400],
   3: [1080, 700],
   4: [1200, 640],
+  "环形多头": [900, 900],
 };
 
 const DEFAULT_TEXTS: Record<Style, string[]> = {
   2: ["原神牛逼", "鸣潮牛逼", "！？逼逼？！"],
   3: ["Gemini 牛逼", "Kimi 牛逼", "Deepseek 牛逼", "！？NKD？！"],
   4: ["Blender 牛逼", "Unity3D 牛逼", "Python 牛逼", "TypeScript 牛逼", "！？BUPT？！"],
+  "环形多头": [],
 };
 
 const INPUT_LABELS: Record<Style, string[]> = {
   2: ["文案 1", "文案 2", "！？？！"],
   3: ["文案 1", "文案 2", "文案 3", "！？？！"],
   4: ["文案 1", "文案 2", "文案 3", "文案 4", "！？？！"],
+  "环形多头": [],
 };
+ 
+// 生成环形模式的输入标签
+function getRingLabels(count: number): string[] {
+  const labels = [];
+  for (let i = 0; i < count; i++) {
+    labels.push(`文案 ${i + 1}`);
+  }
+  labels.push("！？？！");
+  return labels;
+}
 
 // ─── Canvas Helpers ──────────────────────────────────────────────────────────
 
@@ -229,6 +242,147 @@ function drawStyle4(ctx: CanvasRenderingContext2D, w: number, h: number, imgs: I
   drawImg(ctx, imgs.middle, pX, pY + pTxt + pArrow + 4, pW, pImgH, true);
 }
 
+/**
+ * 环形多头模式:
+ * 外圈: left 和 right 图片交替排列，带旋转
+ * 中心: middle 图片 + 最后一个文本
+ */
+function drawStyleRing(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  imgs: Imgs,
+  texts: string[],
+  headCount: number
+) {
+  const cx = w / 2;
+  const cy = h / 2;
+  const radius = Math.min(w, h) * 0.34; // 外圈半径
+  const imgSize = Math.min(100, radius * 0.55); // 每个头像的大小
+  const textOffset = imgSize * 0.7 + 20; // 文字到图像中心的距离
+
+  // 绘制外圈的头像和文字
+  for (let i = 0; i < headCount; i++) {
+    const angle = (i / headCount) * Math.PI * 2 - Math.PI / 2; // 从顶部开始
+    const x = cx + Math.cos(angle) * radius;
+    const y = cy + Math.sin(angle) * radius;
+
+    // 选择图片：交替使用 left 和 right
+    const img = i % 2 === 0 ? imgs.right : imgs.left;
+
+    // 保存上下文状态
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // 计算旋转角度：让头像朝向中心
+    const rotationAngle = angle + Math.PI / 2;
+    ctx.rotate(rotationAngle);
+
+    // 绘制图像（以当前点为中心）
+    drawImg(ctx, img, -imgSize / 2, -imgSize / 2, imgSize, imgSize, false);
+
+    ctx.restore();
+
+    // 绘制文字（在图像外侧）
+    const textRadius = radius + textOffset;
+    const textX = cx + Math.cos(angle) * textRadius;
+    const textY = cy + Math.sin(angle) * textRadius;
+
+    ctx.save();
+    ctx.translate(textX, textY);
+    
+    // 文字旋转，使其可读（底部的文字需要翻转）
+    let textRotation = angle + Math.PI / 2;
+    if (angle > 0 && angle < Math.PI) {
+      textRotation += Math.PI;
+    }
+    ctx.rotate(textRotation);
+
+    // 绘制文字
+    const txt = texts[i] || "";
+    ctx.font = `bold 18px ${FONT}`;
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    
+    // 简单换行处理
+    const maxWidth = imgSize * 1.5;
+    const words = [...txt];
+    let line = "";
+    const lines: string[] = [];
+    for (const char of words) {
+      const testLine = line + char;
+      if (ctx.measureText(testLine).width > maxWidth && line) {
+        lines.push(line);
+        line = char;
+      } else {
+        line = testLine;
+      }
+    }
+    if (line) lines.push(line);
+
+    const lineHeight = 22;
+    const totalHeight = lines.length * lineHeight;
+    lines.forEach((l, idx) => {
+      ctx.fillText(l, 0, -totalHeight / 2 + idx * lineHeight + lineHeight / 2);
+    });
+
+    ctx.restore();
+
+    // 绘制箭头（从文字指向图像）
+    const arrowStartRadius = radius + textOffset - 30;
+    const arrowEndRadius = radius + imgSize / 2 + 5;
+    const arrowStartX = cx + Math.cos(angle) * arrowStartRadius;
+    const arrowStartY = cy + Math.sin(angle) * arrowStartRadius;
+    const arrowEndX = cx + Math.cos(angle) * arrowEndRadius;
+    const arrowEndY = cy + Math.sin(angle) * arrowEndRadius;
+
+    ctx.save();
+    ctx.strokeStyle = "#000";
+    ctx.fillStyle = "#000";
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+
+    // 箭头线
+    ctx.beginPath();
+    ctx.moveTo(arrowStartX, arrowStartY);
+    ctx.lineTo(arrowEndX, arrowEndY);
+    ctx.stroke();
+
+    // 箭头头部
+    const arrowAngle = Math.atan2(arrowEndY - arrowStartY, arrowEndX - arrowStartX);
+    const arrowHeadLen = 8;
+    ctx.beginPath();
+    ctx.moveTo(arrowEndX, arrowEndY);
+    ctx.lineTo(
+      arrowEndX - arrowHeadLen * Math.cos(arrowAngle - Math.PI / 6),
+      arrowEndY - arrowHeadLen * Math.sin(arrowAngle - Math.PI / 6)
+    );
+    ctx.lineTo(
+      arrowEndX - arrowHeadLen * Math.cos(arrowAngle + Math.PI / 6),
+      arrowEndY - arrowHeadLen * Math.sin(arrowAngle + Math.PI / 6)
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  // 绘制中心的 middle 图片
+  const centerImgSize = imgSize * 1.3;
+  drawImg(ctx, imgs.middle, cx - centerImgSize / 2, cy - centerImgSize / 2, centerImgSize, centerImgSize, false);
+
+  // 绘制中心文字（最后一个文本，在 middle 图片下方）
+  const centerText = texts[headCount] || "";
+  if (centerText) {
+    ctx.font = `bold 24px ${FONT}`;
+    ctx.fillStyle = "#000";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "top";
+    wrapText(ctx, centerText, cx, cy + centerImgSize / 2 + 10, centerImgSize * 2, 24);
+  }
+}
+
 // ─── Main Component ──────────────────────────────────────────────────────────
 
 export default function MemeGenerator() {
@@ -237,6 +391,7 @@ export default function MemeGenerator() {
   const [style, setStyle] = useState<Style>(2);
   const [texts, setTexts] = useState<string[]>(new Array(DEFAULT_TEXTS[2].length).fill(""));
   const [ready, setReady] = useState(false);
+  const [ringCount, setRingCount] = useState(4); // 环形模式的头数量
 
   // Load images once
   useEffect(() => {
@@ -266,8 +421,9 @@ export default function MemeGenerator() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     if (style === 2) drawStyle2(ctx, canvas.width, canvas.height, imgs, texts);
     else if (style === 3) drawStyle3(ctx, canvas.width, canvas.height, imgs, texts);
-    else drawStyle4(ctx, canvas.width, canvas.height, imgs, texts);
-  }, [style, texts]);
+    else if (style === 4) drawStyle4(ctx, canvas.width, canvas.height, imgs, texts);
+    else if (style === "环形多头") drawStyleRing(ctx, canvas.width, canvas.height, imgs, texts, ringCount);
+  }, [style, texts, ringCount]);
 
   useEffect(() => {
     if (ready) redraw();
@@ -276,7 +432,27 @@ export default function MemeGenerator() {
   // When style changes, reset texts
   const changeStyle = (s: Style) => {
     setStyle(s);
-    setTexts(new Array(DEFAULT_TEXTS[s].length).fill(""));
+    if (s === "环形多头") {
+      setTexts(new Array(ringCount + 1).fill("")); // ringCount 个外圈 + 1 个中心
+    } else {
+      setTexts(new Array(DEFAULT_TEXTS[s].length).fill(""));
+    }
+  };
+
+  // 更新环形模式的头数量
+  const updateRingCount = (count: number) => {
+    const newCount = Math.max(3, count); // 最少3个
+    setRingCount(newCount);
+    if (style === "环形多头") {
+      setTexts(prev => {
+        const next = new Array(newCount + 1).fill("");
+        // 保留已输入的文本
+        for (let i = 0; i < Math.min(prev.length, next.length); i++) {
+          next[i] = prev[i];
+        }
+        return next;
+      });
+    }
   };
 
   const updateText = (i: number, val: string) => {
@@ -297,7 +473,7 @@ export default function MemeGenerator() {
   };
 
   const [cw, ch] = CANVAS_SIZE[style];
-  const labels = INPUT_LABELS[style];
+  const labels = style === "环形多头" ? getRingLabels(ringCount) : INPUT_LABELS[style];
 
   return (
     <div style={styles.page}>
@@ -326,8 +502,34 @@ export default function MemeGenerator() {
                   {s} 头
                 </button>
               ))}
+              <button
+                onClick={() => changeStyle("环形多头")}
+                style={{
+                  ...styles.segment,
+                  ...(style === "环形多头" ? styles.segmentActive : {}),
+                }}
+              >
+                环形多头
+              </button>
             </div>
           </section>
+
+          {/* Ring count input (only for 环形多头 mode) */}
+          {style === "环形多头" && (
+            <section style={styles.section}>
+              <span style={styles.sectionTitle}>外圈头数</span>
+              <div style={styles.ringCountWrap}>
+                <input
+                  type="number"
+                  min={3}
+                  value={ringCount}
+                  onChange={e => updateRingCount(parseInt(e.target.value) || 3)}
+                  style={styles.ringCountInput}
+                />
+                <span style={styles.ringCountHint}>（最少 3 个）</span>
+              </div>
+            </section>
+          )}
 
           {/* Text inputs */}
           <section style={styles.section}>
@@ -534,6 +736,26 @@ const styles: Record<string, React.CSSProperties> = {
     justifyContent: "center",
     background: "rgba(255, 255, 255, 0.8)",
     fontSize: 14,
+    color: "rgba(0, 0, 0, 0.45)",
+  },
+  ringCountWrap: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  },
+  ringCountInput: {
+    width: 80,
+    padding: "7px 11px",
+    fontSize: 14,
+    border: "1px solid #d9d9d9",
+    borderRadius: 6,
+    background: "#ffffff",
+    color: "rgba(0, 0, 0, 0.88)",
+    outline: "none",
+    textAlign: "center" as const,
+  },
+  ringCountHint: {
+    fontSize: 13,
     color: "rgba(0, 0, 0, 0.45)",
   },
 };
