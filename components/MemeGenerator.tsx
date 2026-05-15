@@ -735,7 +735,7 @@ export default function MemeGenerator() {
                     onKeyDown={e => {
                       if (e.key === "Enter" && !isGenerating) void generateCandidates();
                     }}
-                    placeholder="例如：有点编程语言"
+                    placeholder="福利姬"
                   />
                 </div>
                 <div style={styles.generatorSelectGroup}>
