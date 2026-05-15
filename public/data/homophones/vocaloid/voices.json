@@ -1,0 +1,22 @@
+[
+  {"id":"hatsune-miku","zh":"初音未来","en":"Hatsune Miku","pinyin":["chu","yin","wei","lai"],"aliases":["miku","初音","未来","39","mi ku","u"],"tags":["歌姬","角色","经典"]},
+  {"id":"kagamine-rin","zh":"镜音铃","en":"Kagamine Rin","pinyin":["jing","yin","ling"],"aliases":["镜音","铃","rin","ling","in"],"tags":["歌姬","双子"]},
+  {"id":"kagamine-len","zh":"镜音连","en":"Kagamine Len","pinyin":["jing","yin","lian"],"aliases":["连","len","lian","ian"],"tags":["歌姬","双子"]},
+  {"id":"megurine-luka","zh":"巡音流歌","en":"Megurine Luka","pinyin":["xun","yin","liu","ge"],"aliases":["luka","巡音","流歌","章鱼","ge"],"tags":["歌姬","角色"]},
+  {"id":"meiko","zh":"咩酱","en":"MEIKO","pinyin":["mie","jiang"],"aliases":["meiko","mei ko","me","jiang"],"tags":["歌姬","元老"]},
+  {"id":"kaito","zh":"海斗","en":"KAITO","pinyin":["hai","dou"],"aliases":["kaito","kai to","海哥","冰淇淋","to"],"tags":["歌姬","元老"]},
+  {"id":"gumi","zh":"GUMI","en":"Megpoid GUMI","pinyin":["gu","mi"],"aliases":["megpoid","gumi","绿毛","mi"],"tags":["歌姬","角色"]},
+  {"id":"gakupo","zh":"神威乐步","en":"Kamui Gakupo","pinyin":["shen","wei","yue","bu"],"aliases":["gakupo","神威","茄子","bu"],"tags":["歌姬","角色"]},
+  {"id":"ia","zh":"IA","en":"IA","pinyin":["yi","ya"],"aliases":["ia","aria","one","ya"],"tags":["歌姬","角色"]},
+  {"id":"vflower","zh":"flower","en":"v flower","pinyin":["fu","la","wa"],"aliases":["flower","vflower","花","wa"],"tags":["歌姬","角色"]},
+  {"id":"yuzuki-yukari","zh":"结月缘","en":"Yuzuki Yukari","pinyin":["jie","yue","yuan"],"aliases":["yukari","结月","缘兔","yuan"],"tags":["歌姬","角色"]},
+  {"id":"luo-tianyi","zh":"洛天依","en":"Luo Tianyi","pinyin":["luo","tian","yi"],"aliases":["天依","洛天依","lt y","tianyi","yi"],"tags":["中文","歌姬"]},
+  {"id":"yanhe","zh":"言和","en":"Yanhe","pinyin":["yan","he"],"aliases":["言和","yanhe","yan","an"],"tags":["中文","歌姬"]},
+  {"id":"yuezheng-ling","zh":"乐正绫","en":"Yuezheng Ling","pinyin":["yue","zheng","ling"],"aliases":["乐正","阿绫","ling","eng"],"tags":["中文","歌姬"]},
+  {"id":"yuezheng-longya","zh":"乐正龙牙","en":"Yuezheng Longya","pinyin":["yue","zheng","long","ya"],"aliases":["龙牙","longya","牙牙","ya"],"tags":["中文","歌姬"]},
+  {"id":"mo-qingxian","zh":"墨清弦","en":"Mo Qingxian","pinyin":["mo","qing","xian"],"aliases":["清弦","qingxian","墨姐","xian"],"tags":["中文","歌姬"]},
+  {"id":"zhiyu-moke","zh":"徵羽摩柯","en":"Zhiyu Moke","pinyin":["zhi","yu","mo","ke"],"aliases":["摩柯","moke","柯柯","ke"],"tags":["中文","歌姬"]},
+  {"id":"xin-hua","zh":"心华","en":"Xin Hua","pinyin":["xin","hua"],"aliases":["心华","xin hua","hua"],"tags":["中文","歌姬"]},
+  {"id":"seeu","zh":"SeeU","en":"SeeU","pinyin":["xi","you"],"aliases":["seeu","see u","u"],"tags":["歌姬","角色"]},
+  {"id":"kasane-teto","zh":"重音テト","en":"Kasane Teto","pinyin":["chong","yin","te","tuo"],"aliases":["teto","重音","テト","面包","tuo"],"tags":["utau","角色"]}
+]
