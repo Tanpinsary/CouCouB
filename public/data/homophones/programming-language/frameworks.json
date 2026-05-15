@@ -1,0 +1,15 @@
+[
+  {"id":"react","zh":"React","en":"React","pinyin":["rui","ai","ke","te"],"aliases":["react","hooks","jsx","te"],"tags":["框架","前端"]},
+  {"id":"vue","zh":"Vue","en":"Vue","pinyin":["wei","you"],"aliases":["vue","vuejs","组合式api","you","u"],"tags":["框架","前端"]},
+  {"id":"nextjs","zh":"Next.js","en":"Next.js","pinyin":["nai","ke","si","te"],"aliases":["next","nextjs","vercel","app router","te"],"tags":["框架","前端"]},
+  {"id":"nuxt","zh":"Nuxt","en":"Nuxt","pinyin":["na","ke","si","te"],"aliases":["nuxt","nuxtjs","vue","te"],"tags":["框架","前端"]},
+  {"id":"svelte","zh":"Svelte","en":"Svelte","pinyin":["si","wei","er","te"],"aliases":["svelte","sveltekit","compiler","te"],"tags":["框架","前端"]},
+  {"id":"angular","zh":"Angular","en":"Angular","pinyin":["ang","gu","la"],"aliases":["angular","ng","rxjs","la"],"tags":["框架","前端"]},
+  {"id":"nodejs","zh":"Node.js","en":"Node.js","pinyin":["nuo","de"],"aliases":["node","nodejs","npm","de"],"tags":["运行时","后端"]},
+  {"id":"deno","zh":"Deno","en":"Deno","pinyin":["di","nuo"],"aliases":["deno","fresh","typescript runtime","nuo"],"tags":["运行时","后端"]},
+  {"id":"bun","zh":"Bun","en":"Bun","pinyin":["bao"],"aliases":["bun","oven","javascript runtime","bao"],"tags":["运行时","工具"]},
+  {"id":"django","zh":"Django","en":"Django","pinyin":["jiang","gou"],"aliases":["django","python web","orm","gou"],"tags":["框架","后端"]},
+  {"id":"flask","zh":"Flask","en":"Flask","pinyin":["fu","la","si","ke"],"aliases":["flask","python web","microframework","ke"],"tags":["框架","后端"]},
+  {"id":"spring-boot","zh":"Spring Boot","en":"Spring Boot","pinyin":["chun","tian"],"aliases":["spring","spring boot","java web","tian"],"tags":["框架","后端"]},
+  {"id":"laravel","zh":"Laravel","en":"Laravel","pinyin":["la","la","wei","er"],"aliases":["laravel","php","artisan","er"],"tags":["框架","后端"]}
+]

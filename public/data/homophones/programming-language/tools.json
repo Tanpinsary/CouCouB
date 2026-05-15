@@ -1,0 +1,15 @@
+[
+  {"id":"postgresql","zh":"PostgreSQL","en":"PostgreSQL","pinyin":["xiang","tou"],"aliases":["postgres","postgresql","pg","象","tou"],"tags":["数据库","工具"]},
+  {"id":"mysql","zh":"MySQL","en":"MySQL","pinyin":["mai","se","kou"],"aliases":["mysql","关系数据库","kou"],"tags":["数据库","工具"]},
+  {"id":"redis","zh":"Redis","en":"Redis","pinyin":["rui","di","si"],"aliases":["redis","缓存","kv","si"],"tags":["数据库","缓存"]},
+  {"id":"sqlite","zh":"SQLite","en":"SQLite","pinyin":["qing","liang","shu","ju","ku"],"aliases":["sqlite","嵌入式数据库","lite","ku"],"tags":["数据库","工具"]},
+  {"id":"docker","zh":"Docker","en":"Docker","pinyin":["duo","ke"],"aliases":["docker","容器","鲸鱼","ke"],"tags":["工具","部署"]},
+  {"id":"kubernetes","zh":"Kubernetes","en":"Kubernetes","pinyin":["ku","bo"],"aliases":["k8s","kubernetes","容器编排","bo"],"tags":["工具","部署"]},
+  {"id":"git","zh":"Git","en":"Git","pinyin":["ge","te"],"aliases":["git","版本控制","commit","te"],"tags":["工具","协作"]},
+  {"id":"vscode","zh":"VS Code","en":"Visual Studio Code","pinyin":["wei","ai","si","kou","de"],"aliases":["vscode","visual studio code","编辑器","de"],"tags":["工具","编辑器"]},
+  {"id":"vim","zh":"Vim","en":"Vim","pinyin":["wei","mu"],"aliases":["vim","neovim","nvim","mu"],"tags":["工具","编辑器"]},
+  {"id":"emacs","zh":"Emacs","en":"Emacs","pinyin":["yi","ma","ke","si"],"aliases":["emacs","lisp machine","编辑器","si"],"tags":["工具","编辑器"]},
+  {"id":"graphql","zh":"GraphQL","en":"GraphQL","pinyin":["tu","cha","xun"],"aliases":["graphql","gql","schema","xun"],"tags":["协议","接口"]},
+  {"id":"rest","zh":"REST","en":"REST","pinyin":["biao","zheng","zhuang","tai"],"aliases":["rest","restful","api","tai"],"tags":["协议","接口"]},
+  {"id":"grpc","zh":"gRPC","en":"gRPC","pinyin":["yuan","cheng","diao","yong"],"aliases":["grpc","protobuf","rpc","yong"],"tags":["协议","接口"]}
+]
