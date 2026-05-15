@@ -1,0 +1,7 @@
+[
+  {"id":"kadokawa","zh":"角川","en":"Kadokawa","pinyin":["jue","chuan"],"aliases":["kadokawa","角川文库","电击文库","chuan"],"tags":["出版社","厂牌"]},
+  {"id":"dengeki-bunko","zh":"电击文库","en":"Dengeki Bunko","pinyin":["dian","ji","wen","ku"],"aliases":["dengeki","电击","刀剑神域","ku"],"tags":["文库","厂牌"]},
+  {"id":"fantasia-bunko","zh":"富士见Fantasia文库","en":"Fujimi Fantasia Bunko","pinyin":["fu","shi","jian","wen","ku"],"aliases":["fantasia","富士见","约会大作战","ku"],"tags":["文库","厂牌"]},
+  {"id":"mf-bunko-j","zh":"MF文库J","en":"MF Bunko J","pinyin":["wen","ku"],"aliases":["mf文库j","mf bunko","零之使魔","ku"],"tags":["文库","厂牌"]},
+  {"id":"narou","zh":"成为小说家吧","en":"Shosetsuka ni Naro","pinyin":["cheng","wei","xiao","shuo","jia"],"aliases":["naro","narou","小説家になろう","jia"],"tags":["平台","来源"]}
+]

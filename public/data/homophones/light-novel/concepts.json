@@ -1,0 +1,5 @@
+[
+  {"id":"isekai-ln","zh":"异世界轻小说","en":"Isekai Light Novel","pinyin":["yi","shi","jie","qing","xiao","shuo"],"aliases":["异世界","转生","穿越","shuo"],"tags":["类型","题材"]},
+  {"id":"web-novel","zh":"网络小说","en":"Web Novel","pinyin":["wang","luo","xiao","shuo"],"aliases":["web novel","web版","成为小说家吧","shuo"],"tags":["形式","平台"]},
+  {"id":"light-novel","zh":"轻小说","en":"Light Novel","pinyin":["qing","xiao","shuo"],"aliases":["轻小","ln","ラノベ","shuo"],"tags":["类型","媒介"]}
+]
