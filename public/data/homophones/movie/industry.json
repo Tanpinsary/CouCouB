@@ -1,0 +1,7 @@
+[
+  {"id":"a24","zh":"A24","en":"A24","pinyin":["a","er","si"],"aliases":["a24","独立电影","发行商","si"],"tags":["公司","厂牌"]},
+  {"id":"pixar","zh":"皮克斯","en":"Pixar","pinyin":["pi","ke","si"],"aliases":["pixar","玩具总动员","动画工作室","si"],"tags":["工作室","动画"]},
+  {"id":"imax","zh":"IMAX","en":"IMAX","pinyin":["ju","mu"],"aliases":["imax","巨幕","胶片","mu"],"tags":["技术","放映"]},
+  {"id":"sci-fi-film","zh":"科幻片","en":"Science Fiction Film","pinyin":["ke","huan","pian"],"aliases":["科幻","sci fi","science fiction","pian"],"tags":["类型","题材"]},
+  {"id":"film-noir","zh":"黑色电影","en":"Film Noir","pinyin":["hei","se","dian","ying"],"aliases":["noir","黑色电影","犯罪片","ying"],"tags":["类型","题材"]}
+]
