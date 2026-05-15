@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "import:bangumi-anime": "node scripts/import-bangumi-anime.mjs",
     "lint": "next lint"
   },
   "dependencies": {
