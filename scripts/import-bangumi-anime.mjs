@@ -14,6 +14,7 @@ const apiBaseUrl = "https://api.bgm.tv/v0";
 const userAgent = "CouCouB/0.1.0 (https://github.com/tanpinsary/CouCouB)";
 const topSubjectLimit = 1000;
 const studioPositions = new Set(["动画制作", "製作", "制作", "出品"]);
+const chineseCompanyPattern = /(?:中国|北京|上海|广州|深圳|杭州|武汉|成都|重庆|天津|南京|苏州|无锡|厦门|长沙|浙江|江苏|霍尔果斯|克拉玛依|有限公司|股份有限公司|有限责任公司|数字科技|数码科技|文化传媒|文化传播|影业|影视|动漫|腾讯|企鹅影视|哔哩哔哩|bilibili|爱奇艺|优酷|阿里|网易|米哈游|猫眼|宽娱|若森|玄机|绘梦|福煦|视美|原力动画|万维猫|艺画|好传动画|寒木春华|大火鸟|七灵石|狼烟动画|娃娃鱼动画|海岸线动画|可可豆动画|追光动画|绿怪研|铅元素|启缘映画|艾尔平方|幻维数码|索以文化|洛水花原|铸梦动画|声影动漫|融梦动漫|若鸿文化)/iu;
 
 const fallbackSubjects = [
   entry("bangumi-326", "攻壳机动队 S.A.C. 2nd GIG", "攻殻機動隊 S.A.C. 2nd GIG", ["gong", "ke", "ji", "dong", "dui"], ["Koukaku Kidoutai S.A.C. 2nd GIG", "Ghost in the Shell: Stand Alone Complex 2nd GIG"], ["Bangumi", "动画", "rank:1"]),
@@ -45,7 +46,7 @@ async function main() {
     const companies = normalizeCompanies(archive, new Set(subjects.map(subject => subject.bangumiId)));
     if (subjects.length < topSubjectLimit) throw new Error(`Archive produced only ${subjects.length} subjects`);
     await writeJson("bangumi-subjects.json", subjects.map(stripInternalFields));
-    await writeJson("bangumi-companies.json", companies.map(stripInternalFields));
+    await writeJson("bangumi-companies.json", companies.filter(entry => !isChineseAnimationCompany(entry)).map(stripInternalFields));
     console.log(`Imported ${subjects.length} Bangumi anime subjects and ${companies.length} companies.`);
   } catch (error) {
     console.warn(`Bangumi Archive import failed, trying live API: ${error instanceof Error ? error.message : String(error)}`);
@@ -53,12 +54,12 @@ async function main() {
       const { subjects, companies } = await loadLiveApi();
       if (subjects.length < topSubjectLimit) throw new Error(`Live API produced only ${subjects.length} subjects`);
       await writeJson("bangumi-subjects.json", subjects.map(stripInternalFields));
-      await writeJson("bangumi-companies.json", companies.map(stripInternalFields));
+      await writeJson("bangumi-companies.json", companies.filter(entry => !isChineseAnimationCompany(entry)).map(stripInternalFields));
       console.log(`Imported ${subjects.length} Bangumi anime subjects and ${companies.length} companies from live API.`);
     } catch (apiError) {
       console.warn(`Bangumi live API import failed, writing fallback seed: ${apiError instanceof Error ? apiError.message : String(apiError)}`);
       await writeJson("bangumi-subjects.json", fallbackSubjects);
-      await writeJson("bangumi-companies.json", fallbackCompanies);
+      await writeJson("bangumi-companies.json", fallbackCompanies.filter(entry => !isChineseAnimationCompany(entry)));
     }
   }
 }
@@ -379,6 +380,10 @@ function entry(id, zh, en, pinyin, aliases, tags) {
 function stripInternalFields(entry) {
   const { bangumiId, subjectCount, ...publicEntry } = entry;
   return publicEntry;
+}
+
+function isChineseAnimationCompany(entry) {
+  return [entry.zh, entry.en, ...(entry.aliases ?? [])].some(value => chineseCompanyPattern.test(String(value ?? "")));
 }
 
 function splitCompanyNames(value) {

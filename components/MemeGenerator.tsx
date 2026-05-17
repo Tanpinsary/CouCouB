@@ -422,6 +422,7 @@ export default function MemeGenerator() {
   const [fuzzyMatching, setFuzzyMatching] = useState(true);
   const [candidates, setCandidates] = useState<HomophoneCandidate[]>([]);
   const [selectedCandidateOptions, setSelectedCandidateOptions] = useState<Record<number, string[]>>({});
+  const [openCandidateId, setOpenCandidateId] = useState<string | null>(null);
   const [generatorMessage, setGeneratorMessage] = useState("请输入结果文案");
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -429,6 +430,7 @@ export default function MemeGenerator() {
     generatorRequestRef.current += 1;
     setCandidates([]);
     setSelectedCandidateOptions({});
+    setOpenCandidateId(null);
     setGeneratorMessage(message);
     setIsGenerating(false);
   };
@@ -570,6 +572,7 @@ export default function MemeGenerator() {
       applySelectedCandidateOptions(labels.length, candidates, nextSelections);
       return nextSelections;
     });
+    setOpenCandidateId(null);
   };
 
   const generateCandidates = async () => {
@@ -586,6 +589,7 @@ export default function MemeGenerator() {
     setIsGenerating(true);
     setCandidates([]);
     setSelectedCandidateOptions({});
+    setOpenCandidateId(null);
     setGeneratorMessage("加载词库中…");
 
     try {
@@ -735,7 +739,7 @@ export default function MemeGenerator() {
                     onKeyDown={e => {
                       if (e.key === "Enter" && !isGenerating) void generateCandidates();
                     }}
-                    placeholder="福利姬"
+                    placeholder="科比"
                   />
                 </div>
                 <div style={styles.generatorSelectGroup}>
@@ -777,52 +781,72 @@ export default function MemeGenerator() {
 
               {candidates.length > 0 && (
                 <div style={styles.candidateList}>
-                  {candidates.map(candidate => (
-                    <div key={candidate.id} style={styles.candidateCard}>
-                      <div style={styles.candidateTopline}>
-                        <span style={styles.candidateTitle}>{labels[candidate.slotIndex] ?? candidate.label}</span>
-                        <span style={styles.candidateMeta}>勾选后自动填入该槽</span>
-                      </div>
-                      <div style={styles.candidateOptionList}>
-                        {candidate.options.map(option => {
-                          const checked = (selectedCandidateOptions[candidate.slotIndex] ?? []).includes(option.id);
-                          return (
-                            <label
-                              key={option.id}
-                              style={{
-                                ...styles.candidateOption,
-                                ...(checked ? styles.candidateOptionChecked : {}),
-                                ...(option.readonly ? styles.candidateOptionReadonly : {}),
-                              }}
-                            >
-                              <input
-                                type="checkbox"
-                                checked={checked}
-                                disabled={option.readonly}
-                                onChange={e => toggleCandidateOption(candidate, option.id, e.target.checked)}
-                                style={styles.checkbox}
-                              />
-                              <span style={styles.candidateOptionBody}>
-                                <span style={styles.candidateOptionText}>{option.text}</span>
-                                {option.tags.length > 0 && (
-                                  <span style={styles.candidateTagList}>
-                                    {option.tags.map(tag => (
-                                      <span key={`${option.id}-${tag}`} style={styles.candidateTag}>{tag}</span>
-                                    ))}
-                                  </span>
-                                )}
-                                {option.matches.length > 0 && (
-                                  <span style={styles.candidateMeta}>
-                                    {option.matches.map(match => `${match.token}→${match.replacement}`).join("，")}
-                                  </span>
-                                )}
-                              </span>
-                            </label>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
+                  {candidates.map(candidate => {
+                    const selectedIds = selectedCandidateOptions[candidate.slotIndex] ?? [];
+                    const selectedTexts = candidate.options
+                      .filter(option => selectedIds.includes(option.id))
+                      .map(option => option.text);
+                    const summaryText = selectedTexts.length > 0 ? selectedTexts.join(" + ") : "未选择";
+
+                    return (
+                      <details
+                        key={candidate.id}
+                        open={openCandidateId === candidate.id}
+                        onToggle={event => {
+                          setOpenCandidateId(event.currentTarget.open ? candidate.id : null);
+                        }}
+                        style={styles.candidateCard}
+                      >
+                        <summary style={styles.candidateSummary}>
+                          <span style={styles.candidateSummaryMain}>
+                            <span style={styles.candidateTitle}>{labels[candidate.slotIndex] ?? candidate.label}</span>
+                            <span style={styles.candidateSummaryValue}>{summaryText}</span>
+                          </span>
+                          <span style={styles.candidateSummaryHint}>
+                            {openCandidateId === candidate.id ? "选择后收起" : "展开选择"}
+                          </span>
+                        </summary>
+                        <div style={styles.candidateOptionList}>
+                          {candidate.options.map(option => {
+                            const checked = selectedIds.includes(option.id);
+                            return (
+                              <label
+                                key={option.id}
+                                style={{
+                                  ...styles.candidateOption,
+                                  ...(checked ? styles.candidateOptionChecked : {}),
+                                  ...(option.readonly ? styles.candidateOptionReadonly : {}),
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={checked}
+                                  disabled={option.readonly}
+                                  onChange={e => toggleCandidateOption(candidate, option.id, e.target.checked)}
+                                  style={styles.checkbox}
+                                />
+                                <span style={styles.candidateOptionBody}>
+                                  <span style={styles.candidateOptionText}>{option.text}</span>
+                                  {option.tags.length > 0 && (
+                                    <span style={styles.candidateTagList}>
+                                      {option.tags.map(tag => (
+                                        <span key={`${option.id}-${tag}`} style={styles.candidateTag}>{tag}</span>
+                                      ))}
+                                    </span>
+                                  )}
+                                  {option.matches.length > 0 && (
+                                    <span style={styles.candidateMeta}>
+                                      {option.matches.map(match => `${match.token}→${match.replacement}`).join("，")}
+                                    </span>
+                                  )}
+                                </span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -1149,8 +1173,36 @@ const styles: Record<string, React.CSSProperties> = {
     background: "#ffffff",
     border: "1px solid #f0f0f0",
     borderRadius: 8,
-    padding: 12,
+    padding: "10px 12px",
     boxShadow: "0 1px 2px 0 rgba(0, 0, 0, 0.03)",
+  },
+  candidateSummary: {
+    cursor: "pointer",
+    color: "rgba(0, 0, 0, 0.88)",
+  },
+  candidateSummaryMain: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
+    minWidth: 0,
+    maxWidth: "calc(100% - 80px)",
+    verticalAlign: "middle",
+  },
+  candidateSummaryValue: {
+    display: "inline-block",
+    maxWidth: "100%",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap" as const,
+    fontSize: 13,
+    color: "rgba(0, 0, 0, 0.65)",
+    verticalAlign: "middle",
+  },
+  candidateSummaryHint: {
+    float: "right" as const,
+    fontSize: 12,
+    color: "rgba(0, 0, 0, 0.45)",
+    lineHeight: 1.6,
   },
   candidateTopline: {
     display: "flex",
@@ -1184,6 +1236,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     flexDirection: "column" as const,
     gap: 8,
+    marginTop: 10,
   },
   candidateOption: {
     display: "flex",
